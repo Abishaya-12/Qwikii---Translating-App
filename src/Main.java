@@ -2,13 +2,13 @@ import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpExchange;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.io.*;
 import java.nio.file.*;
 import java.util.*;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,6 +17,7 @@ public class Main {
     static List<Message> messages = new ArrayList<>();
     static Map<String, Map<String, String>> dictionaryByConcept = new HashMap<>();
     static Map<String, Map<String, String>> reverseDictionary = new HashMap<>();
+    static HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
     static List<String> supportedLanguages = Arrays.asList("en", "es", "fr", "de", "it", "pt", "ja", "zh", "ru", "ko");
 
     public static void main(String[] args) throws IOException {
@@ -71,10 +72,13 @@ public class Main {
             for (String pair : query.split("&")) {
                 String[] kv = pair.split("=", 2);
                 if (kv.length == 2 && kv[0].equals("lang") && !kv[1].isBlank()) {
-                    targetLang = kv[1];
+                    targetLang = kv[1].toLowerCase();
                     break;
                 }
             }
+        }
+        if (!supportedLanguages.contains(targetLang)) {
+            targetLang = "en";
         }
 
         StringBuilder json = new StringBuilder("[");
@@ -118,27 +122,102 @@ public class Main {
         }
 
         Map<String, String> sourceMap = reverseDictionary.get(source);
-        StringBuilder translated = new StringBuilder();
-        Pattern tokenPattern = Pattern.compile("[\\p{L}0-9]+|[^\\p{L}0-9]+");
+        List<String> tokens = new ArrayList<>();
+        List<Boolean> isWord = new ArrayList<>();
+        Pattern tokenPattern = Pattern.compile("[\\p{L}0-9'’]+|[^\\p{L}0-9'’]+");
         Matcher matcher = tokenPattern.matcher(text);
 
         while (matcher.find()) {
             String token = matcher.group();
-            if (token.matches("[\\p{L}0-9]+")) {
-                String lower = token.toLowerCase();
-                String concept = sourceMap.get(lower);
+            tokens.add(token);
+            isWord.add(token.matches("[\\p{L}0-9'’]+"));
+        }
+
+        StringBuilder result = new StringBuilder();
+        int i = 0;
+        while (i < tokens.size()) {
+            if (!isWord.get(i)) {
+                result.append(tokens.get(i));
+                i++;
+                continue;
+            }
+
+            String bestTranslation = null;
+            int bestWords = 0;
+            int remainingWords = countRemainingWords(tokens, isWord, i);
+            for (int wordCount = Math.min(5, remainingWords); wordCount > 0; wordCount--) {
+                String candidate = joinWords(tokens, isWord, i, wordCount).toLowerCase();
+                String concept = sourceMap.get(candidate);
                 if (concept != null) {
                     Map<String, String> translations = dictionaryByConcept.get(concept);
                     if (translations != null && translations.containsKey(target)) {
-                        translated.append(preserveCase(token, translations.get(target)));
-                        continue;
+                        bestTranslation = translations.get(target);
+                        bestWords = wordCount;
+                        break;
                     }
                 }
             }
-            translated.append(token);
+
+            if (bestTranslation != null) {
+                result.append(preserveCase(tokens.get(i), bestTranslation));
+                int wordsToConsume = bestWords;
+                int j = i;
+                while (j < tokens.size() && wordsToConsume > 0) {
+                    if (isWord.get(j)) {
+                        wordsToConsume--;
+                    }
+                    j++;
+                }
+                while (j < tokens.size() && !isWord.get(j)) {
+                    result.append(tokens.get(j));
+                    j++;
+                }
+                i = j;
+                continue;
+            }
+
+            String token = tokens.get(i);
+            String concept = sourceMap.get(token.toLowerCase());
+            if (concept != null) {
+                Map<String, String> translations = dictionaryByConcept.get(concept);
+                if (translations != null && translations.containsKey(target)) {
+                    result.append(preserveCase(token, translations.get(target)));
+                    i++;
+                    continue;
+                }
+            }
+
+            result.append(token);
+            i++;
         }
 
-        return translated.toString();
+        return result.toString();
+    }
+
+    static int countRemainingWords(List<String> tokens, List<Boolean> isWord, int start) {
+        int count = 0;
+        for (int i = start; i < tokens.size(); i++) {
+            if (isWord.get(i)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    static String joinWords(List<String> tokens, List<Boolean> isWord, int start, int wordCount) {
+        StringBuilder builder = new StringBuilder();
+        int currentWords = 0;
+        for (int i = start; i < tokens.size() && currentWords < wordCount; i++) {
+            if (!isWord.get(i)) {
+                continue;
+            }
+            if (builder.length() > 0) {
+                builder.append(' ');
+            }
+            builder.append(tokens.get(i));
+            currentWords++;
+        }
+        return builder.toString();
     }
 
     static void loadTranslations() throws IOException {
@@ -220,7 +299,7 @@ public class Main {
     // simple JSON parser for flat string objects like {"sender":"Bob","text":"Hi"}
     static Map<String, String> parseJson(String json) {
         Map<String, String> map = new HashMap<>();
-        Pattern pattern = Pattern.compile("\"([^\"]+)\"\\s*:\\s*\"([^\"]*)\"");
+        Pattern pattern = Pattern.compile("\"(sender|text|lang)\"\\s*:\\s*\"((?:\\\\.|[^\\\\\"])*?)\"");
         Matcher matcher = pattern.matcher(json);
         while (matcher.find()) {
             map.put(matcher.group(1), unescapeJson(matcher.group(2)));
