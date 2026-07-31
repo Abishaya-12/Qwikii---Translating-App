@@ -117,6 +117,15 @@ public class Main {
         if (source.equals(target)) {
             return text;
         }
+
+        try {
+            return translateOnline(text, source, target);
+        } catch (Exception e) {
+            return translateOffline(text, source, target);
+        }
+    }
+
+    static String translateOffline(String text, String source, String target) {
         if (!reverseDictionary.containsKey(source) || !supportedLanguages.contains(target)) {
             return text;
         }
@@ -192,6 +201,28 @@ public class Main {
         }
 
         return result.toString();
+    }
+
+    static String translateOnline(String text, String source, String target) throws IOException, InterruptedException {
+        String encoded = URLEncoder.encode(text, StandardCharsets.UTF_8);
+        String url = String.format("https://translate.googleapis.com/translate_a/single?client=gtx&sl=%s&tl=%s&dt=t&q=%s", source, target, encoded);
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(url))
+            .GET()
+            .header("User-Agent", "Mozilla/5.0")
+            .build();
+
+        HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        if (response.statusCode() != 200) {
+            throw new IOException("Translation service returned " + response.statusCode());
+        }
+
+        Pattern p = Pattern.compile("\\[\\[\\[\"((?:\\\\.|[^\\\\\"])*)\"");
+        Matcher matcher = p.matcher(response.body());
+        if (matcher.find()) {
+            return unescapeJson(matcher.group(1));
+        }
+        throw new IOException("Unexpected translation response");
     }
 
     static int countRemainingWords(List<String> tokens, List<Boolean> isWord, int start) {
