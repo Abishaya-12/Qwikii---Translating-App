@@ -55,12 +55,19 @@ body::before {
 
 .login-card {
   display: grid;
-  gap: 18px;
+  gap: 14px;
+}
+
+.login-card .logo {
+  width: 120px;
+  justify-self: center;
+  border-radius: 18px;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.18);
 }
 
 .login-card h1 {
   margin: 0;
-  font-size: 34px;
+  font-size: 32px;
   letter-spacing: 1px;
   color: var(--accent);
   text-shadow: 0 0 10px rgba(255, 126, 176, 0.35);
@@ -148,6 +155,55 @@ button:hover {
   color: var(--muted);
 }
 
+.friends-panel {
+  margin-bottom: 18px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 18px;
+  display: grid;
+  gap: 10px;
+}
+
+.friends-title {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.friends-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.friend-button {
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 14px;
+  background: rgba(255,255,255,0.08);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.friend-active {
+  background: rgba(255, 110, 199, 0.24);
+  border-color: rgba(255, 110, 199, 0.4);
+}
+
+.friend-add {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+}
+
+.friend-empty {
+  color: var(--muted);
+  font-size: 10px;
+}
+
 .inbox-panel {
   display: grid;
   grid-template-columns: 120px 1fr;
@@ -163,8 +219,9 @@ button:hover {
 .inbox-image {
   width: 100%;
   border-radius: 18px;
-  background: rgba(255,255,255,0.1);
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.18);
+  object-fit: cover;
+  height: 120px;
 }
 
 .inbox-info {

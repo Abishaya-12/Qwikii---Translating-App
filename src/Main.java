@@ -44,6 +44,7 @@ public class Main {
 
         Message m = new Message();
         m.sender = data.getOrDefault("sender", "Anon");
+        m.friend = data.getOrDefault("friend", "");
         m.text = data.getOrDefault("text", "");
         m.lang = data.getOrDefault("lang", "en");
         if (m.lang == null || m.lang.isBlank()) {
@@ -53,7 +54,9 @@ public class Main {
         if (!supportedLanguages.contains(m.lang)) {
             m.lang = "en";
         }
-        m.timestamp = System.currentTimeMillis();
+        if (m.friend == null) {
+            m.friend = "";
+        }
         messages.add(m);
 
         String response = "{\"status\":\"ok\"}";
@@ -67,13 +70,19 @@ public class Main {
 
     static void handleGet(HttpExchange ex) throws IOException {
         String targetLang = "en";
-        String query = ex.getRequestURI().getQuery(); // e.g. lang=en
+        String user = "";
+        String friend = "";
+        String query = ex.getRequestURI().getQuery(); // e.g. lang=en&user=Anna&friend=Ben
         if (query != null) {
             for (String pair : query.split("&")) {
                 String[] kv = pair.split("=", 2);
-                if (kv.length == 2 && kv[0].equals("lang") && !kv[1].isBlank()) {
+                if (kv.length != 2) continue;
+                if (kv[0].equals("lang") && !kv[1].isBlank()) {
                     targetLang = kv[1].toLowerCase();
-                    break;
+                } else if (kv[0].equals("user")) {
+                    user = kv[1];
+                } else if (kv[0].equals("friend")) {
+                    friend = kv[1];
                 }
             }
         }
@@ -82,10 +91,15 @@ public class Main {
         }
 
         StringBuilder json = new StringBuilder("[");
-        for (int i = 0; i < messages.size(); i++) {
-            Message m = messages.get(i);
+        boolean first = true;
+        for (Message m : messages) {
+            if (user.isBlank() || friend.isBlank()) {
+                continue;
+            }
+            if (!((m.sender.equals(user) && m.friend.equals(friend)) || (m.sender.equals(friend) && m.friend.equals(user)))) {
+                continue;
+            }
             String displayText = m.text;
-
             if (!m.lang.equals(targetLang)) {
                 try {
                     displayText = translate(m.text, m.lang, targetLang);
@@ -93,14 +107,16 @@ public class Main {
                     displayText = m.text + " (translation failed)";
                 }
             }
-
+            if (!first) {
+                json.append(",");
+            }
+            first = false;
             json.append("{")
                 .append("\"sender\":\"").append(escape(m.sender)).append("\",")
                 .append("\"text\":\"").append(escape(displayText)).append("\",")
                 .append("\"lang\":\"").append(escape(m.lang)).append("\",")
                 .append("\"timestamp\":").append(m.timestamp)
                 .append("}");
-            if (i < messages.size() - 1) json.append(",");
         }
         json.append("]");
 
@@ -327,10 +343,10 @@ public class Main {
                 .replace("\r", "\\r");
     }
 
-    // simple JSON parser for flat string objects like {"sender":"Bob","text":"Hi"}
+    // simple JSON parser for flat string objects like {"sender":"Bob","text":"Hi","lang":"en","friend":"Ali"}
     static Map<String, String> parseJson(String json) {
         Map<String, String> map = new HashMap<>();
-        Pattern pattern = Pattern.compile("\"(sender|text|lang)\"\\s*:\\s*\"((?:\\\\.|[^\\\\\"])*?)\"");
+        Pattern pattern = Pattern.compile("\"(sender|text|lang|friend)\"\\s*:\\s*\"((?:\\\\.|[^\\\\\"])*?)\"");
         Matcher matcher = pattern.matcher(json);
         while (matcher.find()) {
             map.put(matcher.group(1), unescapeJson(matcher.group(2)));
@@ -339,7 +355,7 @@ public class Main {
     }
 
     static class Message {
-        String sender, text, lang;
+        String sender, friend, text, lang;
         long timestamp;
     }
 }

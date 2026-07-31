@@ -10,6 +10,7 @@
   <div class="app-shell">
     <div class="login-screen" id="loginScreen">
       <div class="login-card">
+        <img class="logo" src="logo.jpeg" alt="Qwikii logo" />
         <h1>Qwikii</h1>
         <p class="subtitle">Chat in your language. Translate for your friend.</p>
         <label>
@@ -24,6 +25,11 @@
           Your view language
           <select id="viewLang"></select>
         </label>
+        <label>
+          Friend name
+          <input id="friendInput" placeholder="Enter friend name" />
+        </label>
+        <button type="button" id="addFriendBtn">Add Friend</button>
         <button id="loginBtn">Start Chat</button>
       </div>
     </div>
@@ -37,16 +43,24 @@
       </header>
 
       <div class="inbox-panel">
-        <img class="inbox-image" src="https://in.pinterest.com/pin/929923023069502379/" alt="Pixel inbox" />
+        <img class="inbox-image" src="inbox.jpg" alt="Pixel inbox" />
         <div class="inbox-info">
           <span class="inbox-label">Pixel Inbox</span>
-          <p>Open your translations like messages in a soft pink inbox.</p>
         </div>
       </div>
 
       <div class="chat-meta">
         <span id="welcomeText"></span>
         <span id="languageText"></span>
+      </div>
+
+      <div class="friends-panel">
+        <div class="friends-title">Friends</div>
+        <div class="friends-list" id="friendsList"></div>
+        <div class="friend-add">
+          <input id="friendInputChat" placeholder="Add friend" />
+          <button type="button" id="addFriendBtnChat">Add</button>
+        </div>
       </div>
 
       <div class="chat-box" id="chatBox"></div>
