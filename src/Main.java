@@ -38,9 +38,12 @@ public class Main {
         Map<String, String> data = parseJson(body);
 
         Message m = new Message();
-        m.sender = data.get("sender");
-        m.text = data.get("text");
-        m.lang = data.get("lang");
+        m.sender = data.getOrDefault("sender", "Anon");
+        m.text = data.getOrDefault("text", "");
+        m.lang = data.getOrDefault("lang", "en");
+        if (m.lang == null || m.lang.isBlank()) {
+            m.lang = "en";
+        }
         m.timestamp = System.currentTimeMillis();
         messages.add(m);
 
