@@ -5,7 +5,7 @@ import java.io.*;
 import java.util.*;
 import java.nio.file.*;
 
-public class main {
+public class Main {
     static List<Message> messages = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
