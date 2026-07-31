@@ -1,1 +1,39 @@
+body {
+  font-family: 'Press Start 2P', cursive;
+  background: #212529;
+  color: #fff;
+  padding: 20px;
+}
 
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.chat-box {
+  height: 300px;
+  overflow-y: auto;
+  margin: 20px 0;
+  background: #000;
+}
+
+.input-row {
+  display: flex;
+  gap: 10px;
+}
+
+.input-row input {
+  flex: 1;
+}
+
+.msg {
+  margin-bottom: 15px;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.msg .sender {
+  color: #92cc41;
+  display: block;
+  margin-bottom: 4px;
+}
