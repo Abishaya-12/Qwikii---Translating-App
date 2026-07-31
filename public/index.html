@@ -7,20 +7,47 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>Qwikii Translator Chat</h1>
-
-    <div class="input-row">
-      <input id="nameInput" placeholder="Your name" />
-      <select id="sendLang"></select>
-      <select id="viewLang"></select>
+  <div class="app-shell">
+    <div class="login-screen" id="loginScreen">
+      <div class="login-card">
+        <h1>Qwikii</h1>
+        <p class="subtitle">Chat in your language. Translate for your friend.</p>
+        <label>
+          Username
+          <input id="nameInput" placeholder="Enter your name" />
+        </label>
+        <label>
+          Your send language
+          <select id="sendLang"></select>
+        </label>
+        <label>
+          Your view language
+          <select id="viewLang"></select>
+        </label>
+        <button id="loginBtn">Start Chat</button>
+      </div>
     </div>
 
-    <div class="chat-box" id="chatBox"></div>
+    <div class="chat-screen hidden" id="chatScreen">
+      <header class="chat-header">
+        <div>
+          <div class="brand">Qwikii</div>
+          <div class="tagline">Pixel chat + auto translation</div>
+        </div>
+        <button id="logoutBtn">Log out</button>
+      </header>
 
-    <div class="input-row">
-      <input id="msgInput" placeholder="Type a message" />
-      <button id="sendBtn">Send</button>
+      <div class="chat-meta">
+        <span id="welcomeText"></span>
+        <span id="languageText"></span>
+      </div>
+
+      <div class="chat-box" id="chatBox"></div>
+
+      <div class="input-panel">
+        <textarea id="msgInput" placeholder="Type your message here..."></textarea>
+        <button id="sendBtn">Send</button>
+      </div>
     </div>
   </div>
 
