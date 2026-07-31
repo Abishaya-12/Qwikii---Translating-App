@@ -1,0 +1,122 @@
+{
+  "greeting": {
+    "en": "hello",
+    "es": "hola",
+    "fr": "bonjour",
+    "de": "hallo",
+    "it": "ciao",
+    "pt": "olá",
+    "ja": "こんにちは",
+    "zh": "你好",
+    "ru": "привет",
+    "ko": "안녕하세요"
+  },
+  "thanks": {
+    "en": "thank you",
+    "es": "gracias",
+    "fr": "merci",
+    "de": "danke",
+    "it": "grazie",
+    "pt": "obrigado",
+    "ja": "ありがとう",
+    "zh": "谢谢",
+    "ru": "спасибо",
+    "ko": "감사합니다"
+  },
+  "bye": {
+    "en": "bye",
+    "es": "adiós",
+    "fr": "au revoir",
+    "de": "tschüss",
+    "it": "ciao",
+    "pt": "tchau",
+    "ja": "さようなら",
+    "zh": "再见",
+    "ru": "пока",
+    "ko": "안녕"
+  },
+  "yes": {
+    "en": "yes",
+    "es": "sí",
+    "fr": "oui",
+    "de": "ja",
+    "it": "sì",
+    "pt": "sim",
+    "ja": "はい",
+    "zh": "是",
+    "ru": "да",
+    "ko": "예"
+  },
+  "no": {
+    "en": "no",
+    "es": "no",
+    "fr": "non",
+    "de": "nein",
+    "it": "no",
+    "pt": "não",
+    "ja": "いいえ",
+    "zh": "不",
+    "ru": "нет",
+    "ko": "아니요"
+  },
+  "love": {
+    "en": "love",
+    "es": "amor",
+    "fr": "amour",
+    "de": "liebe",
+    "it": "amore",
+    "pt": "amor",
+    "ja": "愛",
+    "zh": "爱",
+    "ru": "любовь",
+    "ko": "사랑"
+  },
+  "friend": {
+    "en": "friend",
+    "es": "amigo",
+    "fr": "ami",
+    "de": "freund",
+    "it": "amico",
+    "pt": "amigo",
+    "ja": "友達",
+    "zh": "朋友",
+    "ru": "друг",
+    "ko": "친구"
+  },
+  "goodbye": {
+    "en": "goodbye",
+    "es": "adiós",
+    "fr": "au revoir",
+    "de": "auf wiedersehen",
+    "it": "arrivederci",
+    "pt": "adeus",
+    "ja": "さようなら",
+    "zh": "再见",
+    "ru": "до свидания",
+    "ko": "안녕히 가세요"
+  },
+  "please": {
+    "en": "please",
+    "es": "por favor",
+    "fr": "s'il vous plaît",
+    "de": "bitte",
+    "it": "per favore",
+    "pt": "por favor",
+    "ja": "お願いします",
+    "zh": "请",
+    "ru": "пожалуйста",
+    "ko": "부탁합니다"
+  },
+  "sorry": {
+    "en": "sorry",
+    "es": "lo siento",
+    "fr": "désolé",
+    "de": "sorry",
+    "it": "mi dispiace",
+    "pt": "desculpa",
+    "ja": "ごめんなさい",
+    "zh": "对不起",
+    "ru": "извините",
+    "ko": "죄송합니다"
+  }
+}

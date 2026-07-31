@@ -1,14 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 :root {
-  --bg: #081018;
-  --bg2: #122237;
-  --panel: rgba(10, 20, 40, 0.92);
-  --accent: #4ee8d0;
-  --accent-2: #ffd24d;
-  --text: #f5f8ff;
+  --bg: #77bbff;
+  --bg2: #a1caff;
+  --panel: rgba(82, 140, 255, 0.92);
+  --accent: #ff7eb0;
+  --accent-2: #ffb2ec;
+  --text: #1a202e;
   --muted: #9db2cc;
-  --border: rgba(78, 232, 208, 0.24);
+  --border: rgba(200, 152, 255, 0.596);
 }
 
 * {
